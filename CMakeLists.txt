@@ -11,12 +11,12 @@
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # and Eclipse Distribution License v1.0 which accompany this distribution.
-# 
+#
 # The Eclipse Public License is available at
 #   http://www.eclipse.org/legal/epl-v10.html
 # and the Eclipse Distribution License is available at
 #   http://www.eclipse.org/org/documents/edl-v10.php.
-# 
+#
 # Contributors:
 #   Guilherme Maciel Ferreira - initial version
 #   Frank Pagliughi
@@ -28,7 +28,7 @@
 cmake_minimum_required(VERSION 3.5)
 
 ## project name
-project("paho-mqtt-cpp" 
+project("paho-mqtt-cpp"
     VERSION "1.1.0"
     LANGUAGES CXX
 )
@@ -43,6 +43,7 @@ else()
   option(PAHO_BUILD_STATIC "Build static library" FALSE)
   option(PAHO_BUILD_SHARED "Build shared library" TRUE)
   option(PAHO_WITH_SSL "Build SSL-enabled library" TRUE)
+  option(PAHO_BUILD_DEB_PACKAGE "Build debian package" FALSE)
 endif()
 
 option(PAHO_BUILD_SAMPLES "Build sample programs" FALSE)
@@ -107,7 +108,12 @@ endif()
 if(WIN32)
     set(CPACK_GENERATOR "ZIP")
 elseif(UNIX)
-    set(CPACK_GENERATOR "TGZ")
+	if(PAHO_BUILD_DEB_PACKAGE)
+		set(CPACK_GENERATOR "DEB")
+		include(cmake/CPackDebConfig.cmake)
+	else()
+		set(CPACK_GENERATOR "TGZ")
+	endif()
 endif()
 
 include(CPack)
